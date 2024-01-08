@@ -4,14 +4,8 @@ using PizzaStore.Data;
 using PizzaStore.Models;
 using System.Runtime.InteropServices;
 
-var builder = WebApplication.CreateBuilder(new WebApplicationOptions
-{
-	Args = args,
-//	ApplicationName = typeof(Program).Assembly.FullName,
-//	ContentRootPath = Directory.GetCurrentDirectory(),
-//	EnvironmentName = Environments.Staging,
-//	WebRootPath = "LinuxPizzas"
-});
+var builder = WebApplication.CreateBuilder(args);
+//var connectionString = builder.Configuration.GetConnectionString("Pizzas") ?? "Data Source=Pizzas.db";
 
 Console.WriteLine($"Application Name: {builder.Environment.ApplicationName}");
 Console.WriteLine($"Environment Name: {builder.Environment.EnvironmentName}");
@@ -19,7 +13,8 @@ Console.WriteLine($"ContentRoot Path: {builder.Environment.ContentRootPath}");
 Console.WriteLine($"WebRootPath: {builder.Environment.WebRootPath}");
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddDbContext<PizzaDbContext>(options => options.UseInMemoryDatabase("items"));
+//builder.Services.AddDbContext<PizzaDbContext>(options => options.UseInMemoryDatabase("items"));
+builder.Services.AddDbContext<PizzaDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("PizzaStoreConnectionString")));
 builder.Services.AddSwaggerGen(c => {
 	c.SwaggerDoc("v1", new OpenApiInfo { 
 		Title = "PizzaStore API", 
